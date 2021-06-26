@@ -1,3 +1,3 @@
-Development settings
+# Development settings
 FLASK_ENV=development
 FLASK_APP=src.app
