@@ -1,0 +1,10 @@
+version: '3.9'
+
+services:
+  tardis-test-task:
+    build: .
+    ports:
+      - 5000:5000
+    volumes:
+      - .:/tardis-test-task
+    environment:
