@@ -1,7 +1,10 @@
 from flask import request, jsonify
 from flask_restx import Namespace, Resource
+from marshmallow import ValidationError
+from werkzeug.exceptions import BadRequest
 
-from src.core.structure import get_tags_count, check_structure
+from src.apis.validation_schemes.structure import GetStructureSchema, CheckStructureSchema
+from src.core.structure import get_tags_count, get_structure_difference
 
 api = Namespace('structure', description='Structure related operations')
 
@@ -9,12 +12,11 @@ api = Namespace('structure', description='Structure related operations')
 @api.route('structure')
 class Structure(Resource):
     def get(self):
-        link = request.args.get('link')
-        tags = request.args.get('tags')
-        tags_list = None
-        if tags:
-            tags_list = tags.split(',')
-        res = get_tags_count(link, tags_list)
+        try:
+            args = GetStructureSchema().load(request.args)
+        except ValidationError as err:
+            raise BadRequest(err.messages)
+        res = get_tags_count(args.get('link'), args.get('tags'))
         return jsonify(res)
 
 
@@ -22,9 +24,9 @@ class Structure(Resource):
 class CheckStructure(Resource):
 
     def post(self):
-        link = request.json.get('link')
-        structure = request.json.get('structure')
-        print(link, structure)
-        structure_difference = check_structure(link, structure)
-        print(structure_difference)
+        try:
+            json = CheckStructureSchema().load(request.json)
+        except ValidationError as err:
+            raise BadRequest(err.messages)
+        structure_difference = get_structure_difference(json.get('link'), json.get('structure'))
         return jsonify(structure_difference)

@@ -17,13 +17,12 @@ def generate_auth_code() -> str:
 
 def get_auth_code(phone_number: str) -> str:
     auth_code = generate_auth_code()
-    auth_codes[phone_number[1:]] = auth_code
+    auth_codes[phone_number] = auth_code
     return auth_code
 
 
 def check_auth_code(phone_number: str, auth_code: str) -> bool:
-    print(auth_codes)
-    res = auth_codes.get(phone_number[1:])
+    res = auth_codes.get(phone_number)
     if res is None:
         raise BadRequest('Phone number entered incorrectly')
     if not auth_code == res:

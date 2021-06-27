@@ -1,6 +1,7 @@
 import re
-import requests
 from datetime import datetime
+
+import requests
 
 DEFAULT_URL = 'https://freestylo.ru/'
 
@@ -11,15 +12,15 @@ parse_tag_re = re.compile(r"""
 
 
 def get_html_text(url: str) -> str:
-    responce = requests.get(url)
-    return responce.text
+    data = requests.get(url)
+    return data.text
 
 
 def get_tags_count(url: str = DEFAULT_URL, needed_tags: list = None) -> dict:
     text = get_html_text(url)
-    res = parse_tag_re.findall(text)
+    re_res = parse_tag_re.findall(text)
     tags = []
-    for item in res:
+    for item in re_res:
         if item[0] != '':
             tags.append(item[0])
         else:
@@ -32,10 +33,11 @@ def get_tags_count(url: str = DEFAULT_URL, needed_tags: list = None) -> dict:
             grouped_tags[tag] = 1
     if needed_tags is None:
         return grouped_tags
+    print(datetime.now().timestamp())
     return weed_out_tags(needed_tags, grouped_tags)
 
 
-def check_structure(url: str, structure: dict) -> dict:
+def get_structure_difference(url: str, structure: dict) -> dict:
     tags_count = get_tags_count(url)
     return get_structure_difference(structure, tags_count)
 
@@ -44,7 +46,7 @@ def weed_out_tags(needed_tags: list, tags: dict) -> dict:
     return {key: value for key, value in tags.items() if key in needed_tags}
 
 
-def get_structure_difference(proposed_structure: dict, structure: dict) -> dict:
+def check_structure_difference(proposed_structure: dict, structure: dict) -> dict:
     difference_tags = {}
     for key, value in structure.items():
         difference = abs(value - proposed_structure.get(key, 0))
