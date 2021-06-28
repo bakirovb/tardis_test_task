@@ -16,7 +16,10 @@ class Structure(Resource):
             args = GetStructureSchema().load(request.args)
         except ValidationError as err:
             raise BadRequest(err.messages)
-        res = get_tags_count(args.get('link'), args.get('tags'))
+        if args.get('link'):
+            res = get_tags_count(url=args.get('link'), needed_tags=args.get('tags'))
+        else:
+            res = get_tags_count(needed_tags=args.get('tags'))
         return jsonify(res)
 
 

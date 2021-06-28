@@ -22,7 +22,6 @@ class CheckStructureSchema(Schema):
 
     @pre_load
     def transform_tags_to_list(self, data, **kwargs):
-        print(data)
         if data.get('link').startswith('http'):
             return data
         else:

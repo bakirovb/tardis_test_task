@@ -33,13 +33,12 @@ def get_tags_count(url: str = DEFAULT_URL, needed_tags: list = None) -> dict:
             grouped_tags[tag] = 1
     if needed_tags is None:
         return grouped_tags
-    print(datetime.now().timestamp())
     return weed_out_tags(needed_tags, grouped_tags)
 
 
 def get_structure_difference(url: str, structure: dict) -> dict:
-    tags_count = get_tags_count(url)
-    return get_structure_difference(structure, tags_count)
+    tags_count = get_tags_count(url=url)
+    return check_structure_difference(structure, tags_count)
 
 
 def weed_out_tags(needed_tags: list, tags: dict) -> dict:
